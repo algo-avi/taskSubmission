@@ -10,6 +10,7 @@ const router = express.Router()
 router.get("/", async (req, res) => {
   try {
     const agents = await Agent.find({}).select("-password").sort({ createdAt: -1 })
+    console.log("Agents from DB:", agents); // Debugging line
     res.json({ agents })
   } catch (error) {
     console.error("Get agents error:", error)
