@@ -29,6 +29,9 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
 
+// ✅ Dynamically use BASE_URL from environment variable
+const BASE_URL = import.meta.env.REACT_APP_BASE_URL || "http://localhost:5000/api";
+
 const AgentManagement = () => {
   const [agents, setAgents] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -56,6 +59,7 @@ const AgentManagement = () => {
     { code: "+61", country: "Australia" },
   ];
 
+  // ✅ Fetch agents list
   useEffect(() => {
     fetchAgents();
   }, []);
@@ -63,28 +67,29 @@ const AgentManagement = () => {
   const fetchAgents = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("https://agentflow-backend-pjgp.onrender.com/api/agents");
-      setAgents(response.data.agents);
+      const response = await axios.get(`${BASE_URL}/agents`);
+      const fetchedAgents = response.data?.agents || [];
+      setAgents(fetchedAgents); // ✅ Always an array
     } catch (error) {
       setError(error.response?.data?.message || "Failed to fetch agents");
+      setAgents([]); // ✅ Ensure safe fallback
     } finally {
       setLoading(false);
     }
   };
 
+  // ✅ Create new agent
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
     setError("");
     setSuccess("");
     try {
-      // ✅ सही API URL इस्तेमाल कर रहे हैं
-      await axios.post("http://localhost:5000/api/agents", formData);
-
+      await axios.post(`${BASE_URL}/agents`, formData);
       setSuccess("Agent created successfully!");
       setFormData({ name: "", email: "", mobile: "", countryCode: "+1", password: "" });
       setShowModal(false);
-      fetchAgents(); // ✅ Agent List को रिफ्रेश करो
+      fetchAgents(); // ✅ Refresh agent list
     } catch (error) {
       setError(error.response?.data?.message || "Failed to create agent");
     } finally {
@@ -92,10 +97,11 @@ const AgentManagement = () => {
     }
   };
 
+  // ✅ Delete agent
   const handleDelete = async (agentId) => {
     if (!window.confirm("Are you sure you want to delete this agent?")) return;
     try {
-      await axios.delete(`http://localhost:5000/api/agents/${agentId}`);
+      await axios.delete(`${BASE_URL}/agents/${agentId}`);
       setSuccess("Agent deleted successfully!");
       fetchAgents();
     } catch (error) {

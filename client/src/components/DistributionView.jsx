@@ -28,9 +28,11 @@ const DistributionView = () => {
     // eslint-disable-next-line
   }, [])
 
+const BASE_URL = import.meta.env.REACT_APP_BASE_URL || "http://localhost:5000"
+
   const fetchDistributions = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/distributions")
+      const response = await axios.get(`${BASE_URL}/api/distributions`)
       setDistributions(response.data.distributions)
     } catch (error) {
       setError(error.response?.data?.message || "Failed to fetch distributions")

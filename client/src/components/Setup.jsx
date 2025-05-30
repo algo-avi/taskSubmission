@@ -17,6 +17,9 @@ import {
   Divider,
 } from "@mui/material";
 
+// ✅ Dynamically use BASE_URL from environment variables
+const BASE_URL = import.meta.env.REACT_APP_BASE_URL || "http://localhost:5000";
+
 const Setup = () => {
   const [formData, setFormData] = useState({
     email: "",
@@ -47,8 +50,8 @@ const Setup = () => {
     }
 
     try {
-      // ✅ Backend का सही URL इस्तेमाल कर रहे हैं
-      const response = await axios.post("https://agentflow-backend-pjgp.onrender.com/api/auth/setup", formData);
+      // ✅ Using environment variable for BASE_URL
+      await axios.post(`${BASE_URL}/api/auth/setup`, formData);
 
       alert("Admin account created successfully! You can now login.");
       navigate("/login");
@@ -86,7 +89,7 @@ const Setup = () => {
             <TextField
               label="Password"
               name="password"
-              type="password"
+type="password"
               fullWidth
               required
               inputProps={{ minLength: 6 }}

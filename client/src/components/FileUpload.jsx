@@ -18,6 +18,8 @@ const FileUpload = () => {
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
   ];
 
+const BASE_URL = import.meta.env.REACT_APP_BASE_URL || "http://localhost:5000";
+
   const handleFileSelect = (e) => {
     const selectedFile = e.target.files?.[0];
     setError("");
@@ -52,7 +54,7 @@ const FileUpload = () => {
     try {
       console.log("🔍 Sending file upload request:", file.name); // ✅ Debugging 
 
-      const response = await axios.post("http://localhost:5000/api/upload", formData, {
+      const response = await axios.post(`${BASE_URL}/api/upload`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
